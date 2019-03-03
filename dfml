@@ -1,0 +1,30 @@
+FROM python:3.7-alpine
+
+ENV MAIN_PKGS="\
+        tini curl ca-certificates python3 py3-numpy \
+        py3-numpy-f2py freetype jpeg libpng libstdc++ \
+        libgomp graphviz font-noto openssl" \
+    BUILD_PKGS="\
+        build-base linux-headers python3-dev cython-dev py-setuptools git \
+        cmake jpeg-dev libffi-dev gfortran openblas-dev \
+        py-numpy-dev freetype-dev libpng-dev libexecinfo-dev" \
+    PIP_PKGS="\
+        numpy pyyaml pymkl cffi scikit-learn pandas \
+        matplotlib ipywidgets notebook requests \
+        pillow graphviz seaborn" 
+
+
+RUN apk update; \
+    apk upgrade;
+
+RUN apk add ${MAIN_PKGS}
+RUN apk add ${BUILD_PKGS}
+RUN pip install numpy
+RUN pip install ${PIP_PKGS}
+
+RUN pip install https://download.pytorch.org/whl/cpu/torch-1.0.1.post2-cp37-cp37m-linux_x86_64.whl
+RUN pip install fastai==1.0.44
+RUN pip install torchvision
+
+
+CMD ["sh"]
