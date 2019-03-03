@@ -1,19 +1,16 @@
-FROM python:3.6-alpine as base
+FROM python:3.7.2 
 
-FROM base as builder
-RUN mkdir /install
-WORKDIR /install
-#COPY requirements.txt /requirements.txt
-#RUN pip install --install-option="--prefix=/install" -r /requirements.txt
-RUN apk add build-base
-RUN pip install --install-option="--prefix=/install" uvicorn starlette
+RUN pip install uvicorn starlette
+RUN pip install fastai==1.0.44
+RUN pip install aiohttp python-multipart
+RUN pip3 install https://download.pytorch.org/whl/cpu/torch-1.0.1.post2-cp37-cp37m-linux_x86_64.whl
+RUN pip install torchvision
 
 
-
-FROM base
-COPY --from=builder /install /usr/local
 COPY src /app
+COPY model /model
 WORKDIR /app
+
 # CMD ["sh"]
 CMD ["python", "/app/routes.py"]
 
