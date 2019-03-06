@@ -1,0 +1,27 @@
+version: 1
+formatters:
+  predictionResult:
+    format: '%(message)s'
+  full:
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: full
+    stream: ext://sys.stdout
+  file:
+    class : logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: predictionResult
+    filename: logconfig.log
+    maxBytes: 1024
+    backupCount: 3
+loggers:
+  predLogger:
+    level: INFO
+    handlers: [console, file]
+    propagate: no
+root:
+  level: DEBUG
+  handlers: [console]

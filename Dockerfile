@@ -22,13 +22,18 @@ RUN pip install numpy
 RUN pip install https://download.pytorch.org/whl/cpu/torch-1.0.1.post2-cp37-cp37m-linux_x86_64.whl
 RUN pip install fastai==1.0.44
 RUN pip install torchvision
+RUN pip install watchdog
 
 
 FROM python:3.7-slim-stretch
 
 COPY --from=base /usr/local /usr/local
 COPY src /app
-# COPY model /model
+COPY model /var/fai/model
+COPY docker-config.yaml /app/config.yaml
+COPY logger_conf.yaml /app/logger_conf.yaml
+
 WORKDIR /app
+
 # CMD ["sh"]
-CMD ["python", "/app/routes.py"]
+CMD ["python", "routes.py"]

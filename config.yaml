@@ -1,0 +1,3 @@
+modelDir: "./model"
+imageDir: "/home/zsolt/tmp/images"
+predictionLog: "./predictions.log"
