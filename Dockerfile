@@ -15,15 +15,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 
-RUN pip install uvicorn starlette
-RUN pip install aiohttp python-multipart
+COPY requirements-fastai.txt requirements-fastai.txt
+COPY requirements-app.txt requirements-app.txt
 
-RUN pip install numpy
-RUN pip install https://download.pytorch.org/whl/cpu/torch-1.0.1.post2-cp37-cp37m-linux_x86_64.whl
-RUN pip install fastai==1.0.44
-RUN pip install torchvision
-RUN pip install watchdog
-
+RUN pip install -r requirements-fastai.txt
+RUN pip install -r requirements-app.txt
 
 FROM python:3.7-slim-stretch
 

@@ -1,0 +1,6 @@
+uvicorn 
+starlette
+aiohttp 
+python-multipart
+watchdog 
+dynaconf

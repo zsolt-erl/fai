@@ -1,0 +1,15 @@
+[default]
+
+modelDir = "./model"
+imageDir = "/home/zsolt/tmp/images"
+predictionLog = "./predictions.log"
+
+
+[docker]
+
+modelDir = "/var/fai/model"
+imageDir = "/var/fai/images"
+predictionLog = "/var/fai/images/predictions.log"
+
+
+

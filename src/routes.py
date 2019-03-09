@@ -12,6 +12,9 @@ from watchdog.observers import Observer
 from watchdog.events import LoggingEventHandler, FileSystemEventHandler, PatternMatchingEventHandler
 import logging.config
 import yaml
+from dynaconf import settings
+
+print(settings)
 
 
 app = Starlette()
@@ -104,8 +107,6 @@ if __name__ == '__main__':
     if "predictionLog" in config:
         log_config["handlers"]["file"]["filename"] = config["predictionLog"]
 
-    print(log_config)
-
     logging.config.dictConfig(log_config)
     predLogger = logging.getLogger('predLogger')
 
@@ -113,7 +114,6 @@ if __name__ == '__main__':
 
     defaults.device = torch.device('cpu')
     learn = load_learner(config["modelDir"])
-
     obs = watch_for_images(config["imageDir"])
     uvicorn.run(app, host='0.0.0.0', port=8000)
     obs.stop()
