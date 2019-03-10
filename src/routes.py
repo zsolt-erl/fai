@@ -14,8 +14,6 @@ import logging.config
 import yaml
 from dynaconf import settings
 
-print(settings)
-
 
 app = Starlette()
 
@@ -43,7 +41,7 @@ async def upload(request):
     logging.debug("got upload request")
 
     bytes = await (data["file"].read())
-    print("read image file: %s", data["file"])
+    logging.debug("read image file: %s", data["file"])
 
     return predict_image_from_bytes(bytes)
 
@@ -85,7 +83,7 @@ class NewImageFileHandler(PatternMatchingEventHandler):
         img = open_image(event.src_path)
         lp = learn.predict(img)
         predLog = {"image_file": event.src_path, "result": predict_res(*lp)}
-        predLogger.info(predLog)
+        predLogger.info(json.dumps(predLog))
 
 
 def watch_for_images(path):
@@ -97,23 +95,27 @@ def watch_for_images(path):
 
 
 if __name__ == '__main__':
+    print(settings.MODELDIR)
     # read main config file
-    with open('./config.yaml', 'r') as stream:
-        config = yaml.load(stream)
+    # with open('./config.yaml', 'r') as stream:
+    #    config = yaml.load(stream)
 
     # set up loggers
     with open('./logger_conf.yaml', 'r') as stream:
         log_config = yaml.load(stream)
-    if "predictionLog" in config:
-        log_config["handlers"]["file"]["filename"] = config["predictionLog"]
 
+    log_config["handlers"]["file"]["filename"] = settings.PREDICTIONLOG
+    os.makedirs(os.path.dirname(settings.PREDICTIONLOG), exist_ok=True)
     logging.config.dictConfig(log_config)
     predLogger = logging.getLogger('predLogger')
 
     # torch.nn.Module.dump_patches = True
 
     defaults.device = torch.device('cpu')
-    learn = load_learner(config["modelDir"])
-    obs = watch_for_images(config["imageDir"])
+    learn = load_learner(settings.MODELDIR)
+
+    os.makedirs(settings.IMAGEDIR, exist_ok=True)
+    obs = watch_for_images(settings.IMAGEDIR)
+
     uvicorn.run(app, host='0.0.0.0', port=8000)
     obs.stop()
